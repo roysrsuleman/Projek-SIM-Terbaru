@@ -23,6 +23,7 @@ class AjuanSurat extends Model
         'keperluan',
         'nomor_surat',
         'id_pejabat_desa',
+        'id_pejabat_desa_2',
         'data_tambahan' // <-- Diperbarui
     ];
 
@@ -45,5 +46,9 @@ class AjuanSurat extends Model
     public function pejabatDesa()
     {
         return $this->belongsTo(PejabatDesa::class, 'id_pejabat_desa', 'id_pejabat_desa');
+    }
+    public function pejabatDesa2()
+    {
+        return $this->belongsTo(PejabatDesa::class, 'id_pejabat_desa_2', 'id_pejabat_desa');
     }
 }

@@ -49,16 +49,18 @@ class AjuanSuratController extends Controller
     {
         $request->validate([
             'nomor_surat' => 'required|string|max:100',
-            'id_pejabat_desa' => 'required|integer|exists:tabel_pejabat_desa,id_pejabat_desa', // <-- Cek ke tabel baru
+            'id_pejabat_desa' => 'required|integer', // Pejabat 1 Wajib
+            'id_pejabat_desa_2' => 'nullable|integer', // Pejabat 2 Opsional
         ]);
 
         $ajuan->nomor_surat = $request->nomor_surat;
-        $ajuan->id_pejabat_desa = $request->id_pejabat_desa; // <-- Simpan id pejabat
-        $ajuan->status = 'SELESAI'; // Langsung ubah jadi SELESAI
-        $ajuan->catatan_penolakan = null; // Bersihkan catatan (jika ada)
+        $ajuan->id_pejabat_desa = $request->id_pejabat_desa;
+        $ajuan->id_pejabat_desa_2 = $request->id_pejabat_desa_2; // <-- Simpan
+        $ajuan->status = 'SELESAI';
+        $ajuan->catatan_penolakan = null;
         $ajuan->save();
 
-        return Redirect::route('ajuan-surat.index')->with('success', 'Ajuan berhasil dikonfirmasi dan dipindahkan ke arsip.');
+        return Redirect::route('ajuan-surat.index')->with('success', 'Ajuan berhasil dikonfirmasi.');
     }
 
     /**
@@ -150,17 +152,45 @@ class AjuanSuratController extends Controller
         $templateProcessor->setValue('tanggal_pembuatan', Carbon::now()->isoFormat('D MMMM Y'));
 
         // Data Pejabat
-        if ($ajuan->pejabatDesa) {
-            $templateProcessor->setValue('nama_pejabat', $ajuan->pejabatDesa->nama_pejabat);
-            $templateProcessor->setValue('jabatan', $ajuan->pejabatDesa->jabatan);
-            // Jika Anda nanti tambah kolom NIP di tabel pejabat, panggil di sini.
-            // Untuk sekarang kita isi strip dulu jika belum ada kolomnya
-            $templateProcessor->setValue('nip', $ajuan->pejabatDesa->nip ?? '-'); 
-        } else {
-            $templateProcessor->setValue('nama_pejabat', '-');
-            $templateProcessor->setValue('jabatan', '-');
-            $templateProcessor->setValue('nip', '-');
-        }
+        // ... (load data warga, kk, dll di atas)
+
+            // --- DATA PEJABAT 1 (Utama/Kanan) ---
+            if ($ajuan->pejabatDesa) {
+                $p1 = $ajuan->pejabatDesa;
+                $templateProcessor->setValue('nama_pejabat', $p1->nama_pejabat);
+                $templateProcessor->setValue('jabatan_pejabat', $p1->jabatan);
+                $templateProcessor->setValue('nip_pejabat', $p1->nip ?? '-');
+                
+                // Hitung umur P1
+                $umurP1 = ($p1->tanggal_lahir) ? \Carbon\Carbon::parse($p1->tanggal_lahir)->age . ' Tahun' : '-';
+                $templateProcessor->setValue('umur_pejabat', $umurP1);
+            } else {
+                // Isi strip jika kosong
+                $templateProcessor->setValue('nama_pejabat', '-');
+                $templateProcessor->setValue('jabatan_pejabat', '-');
+                $templateProcessor->setValue('nip_pejabat', '-');
+                $templateProcessor->setValue('umur_pejabat', '-');
+            }
+
+            // --- DATA PEJABAT 2 (Tambahan/Kiri) ---
+            if ($ajuan->pejabatDesa2) {
+                $p2 = $ajuan->pejabatDesa2;
+                $templateProcessor->setValue('nama_pejabat_2', $p2->nama_pejabat);
+                $templateProcessor->setValue('jabatan_pejabat_2', $p2->jabatan);
+                $templateProcessor->setValue('nip_pejabat_2', $p2->nip ?? '-');
+                
+                // Hitung umur P2
+                $umurP2 = ($p2->tanggal_lahir) ? \Carbon\Carbon::parse($p2->tanggal_lahir)->age . ' Tahun' : '-';
+                $templateProcessor->setValue('umur_pejabat_2', $umurP2);
+            } else {
+                // Jika tidak dipilih, kosongkan (String kosong agar di Word bersih)
+                $templateProcessor->setValue('nama_pejabat_2', '');
+                $templateProcessor->setValue('jabatan_pejabat_2', '');
+                $templateProcessor->setValue('nip_pejabat_2', '');
+                $templateProcessor->setValue('umur_pejabat_2', '');
+            }
+            
+            // ... (lanjut download)
 
 
         // ==========================================

@@ -3,6 +3,7 @@
 // --- BAGIAN 1: DAFTAR SEMUA CONTROLLER KITA ---
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Citizen\AuthController;
+use App\Http\Controllers\Citizen\ProfileController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DusunController;
 use App\Http\Controllers\Admin\KKController;
@@ -33,6 +34,8 @@ Route::prefix('warga')->group(function () {
         Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('warga.dashboard');
         Route::get('/ajuan-surat', [CitizenAjuanSuratController::class, 'create'])->name('warga.ajuan.create');
         Route::post('/ajuan-surat', [CitizenAjuanSuratController::class, 'store'])->name('warga.ajuan.store');
+        Route::get('/profil/password', [ProfileController::class, 'editPassword'])->name('warga.password.edit');
+        Route::post('/profil/password', [ProfileController::class, 'updatePassword'])->name('warga.password.update');
     });
 });
 

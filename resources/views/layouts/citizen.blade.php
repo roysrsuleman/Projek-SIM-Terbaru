@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="id">
+
 <head>
     <meta charset="utf-content">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,15 +13,18 @@
         body {
             background-color: #f4f7f6;
         }
+
         .sidebar {
             background-color: #fff;
             border-right: 1px solid #dee2e6;
             min-height: 100vh;
         }
+
         .sidebar .list-group-item {
             border: none;
             padding: 1rem 1.5rem;
         }
+
         .sidebar .list-group-item.active {
             background-color: #0d6efd;
             color: #fff;
@@ -28,8 +32,9 @@
         }
     </style>
 </head>
+
 <body>
-    
+
     <!-- Navbar Atas -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
         <div class="container-fluid">
@@ -41,25 +46,26 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarMain">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                  {{-- Hanya tampilkan menu ini JIKA user sudah login --}}
-                  @auth
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user me-2"></i>{{ Auth::user()->nama_lengkap }}
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <!-- Tombol Logout -->
-                            <li>
-                                <form action="{{ route('warga.logout') }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="dropdown-item">
-                                        <i class="fas fa-sign-out-alt me-2"></i>Logout
-                                    </button>
-                                </form>
-                            </li>
-                        </ul>
-                    </li>
-                  @endauth
+                    {{-- Hanya tampilkan menu ini JIKA user sudah login --}}
+                    @auth
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button"
+                                data-bs-toggle="dropdown">
+                                <i class="fas fa-user me-2"></i>{{ Auth::user()->nama_lengkap }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <!-- Tombol Logout -->
+                                <li>
+                                    <form action="{{ route('warga.logout') }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item">
+                                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    @endauth
                 </ul>
             </div>
         </div>
@@ -70,16 +76,16 @@
             <!-- Sidebar Kiri -->
             <nav class="col-md-3 col-lg-2 d-md-block sidebar p-4">
                 <div class="list-group">
-                    <a href="{{ route('warga.dashboard') }}" 
-                       class="list-group-item list-group-item-action @if(Request::is('warga/dashboard*')) active @endif">
+                    <a href="{{ route('warga.dashboard') }}"
+                        class="list-group-item list-group-item-action @if(Request::is('warga/dashboard*')) active @endif">
                         <i class="fas fa-tachometer-alt fa-fw me-2"></i>Dashboard
                     </a>
-                    <a href="{{ route('warga.ajuan.create') }}" 
-                         class="list-group-item list-group-item-action @if(Request::is('warga/ajuan-surat*')) active @endif">
+                    <a href="{{ route('warga.ajuan.create') }}"
+                        class="list-group-item list-group-item-action @if(Request::is('warga/ajuan-surat*')) active @endif">
                         <i class="fas fa-file-alt fa-fw me-2"></i>Buat Ajuan Surat
                     </a>
-                    <a href="#" 
-                       class="list-group-item list-group-item-action @if(Request::is('warga/profil*')) active @endif">
+                    <a href="{{ route('warga.password.edit') }}"
+                        class="list-group-item list-group-item-action @if(Request::is('warga/profil*')) active @endif">
                         <i class="fas fa-user-cog fa-fw me-2"></i>Ubah Password
                     </a>
                 </div>
@@ -98,4 +104,5 @@
 
     @stack('scripts')
 </body>
+
 </html>

@@ -1,0 +1,58 @@
+@extends('layouts.citizen')
+
+@section('title', 'Ubah Password')
+
+@section('content')
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+
+                    {{-- Tampilkan Error Validasi --}}
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <form action="{{ route('warga.password.update') }}" method="POST">
+                        @csrf
+
+                        <div class="mb-4">
+                            <label for="current_password" class="form-label">Password Lama</label>
+                            <input type="password" class="form-control" id="current_password" name="current_password"
+                                required>
+                        </div>
+
+                        <hr>
+
+                        <div class="mb-3">
+                            <label for="new_password" class="form-label">Password Baru</label>
+                            <input type="password" class="form-control" id="new_password" name="new_password" required
+                                placeholder="Minimal 6 karakter">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="new_password_confirmation" class="form-label">Konfirmasi Password Baru</label>
+                            <input type="password" class="form-control" id="new_password_confirmation"
+                                name="new_password_confirmation" required placeholder="Ulangi password baru">
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ route('warga.dashboard') }}" class="btn btn-secondary">Batal</a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save me-2"></i>Simpan Password Baru
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
